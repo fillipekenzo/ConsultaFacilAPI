@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFApi", "CFApi\CFApi.csproj", "{7ECB7696-A0A6-4188-968D-338D028B0734}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7ECB7696-A0A6-4188-968D-338D028B0734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ECB7696-A0A6-4188-968D-338D028B0734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ECB7696-A0A6-4188-968D-338D028B0734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ECB7696-A0A6-4188-968D-338D028B0734}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF581589-40AF-45B8-9BBA-CBD41B0C6B73}
+	EndGlobalSection
+EndGlobal

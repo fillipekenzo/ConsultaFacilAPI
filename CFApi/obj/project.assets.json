@@ -12959,11 +12959,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\filli\\Desktop\\MeuIF\\CFApi\\CFApi\\CFApi.csproj",
+      "projectUniqueName": "C:\\Users\\filli\\Desktop\\CFApi\\CFApi\\CFApi.csproj",
       "projectName": "CFApi",
-      "projectPath": "C:\\Users\\filli\\Desktop\\MeuIF\\CFApi\\CFApi\\CFApi.csproj",
+      "projectPath": "C:\\Users\\filli\\Desktop\\CFApi\\CFApi\\CFApi.csproj",
       "packagesPath": "C:\\Users\\filli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\filli\\Desktop\\MeuIF\\CFApi\\CFApi\\obj\\",
+      "outputPath": "C:\\Users\\filli\\Desktop\\CFApi\\CFApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",

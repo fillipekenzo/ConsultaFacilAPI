@@ -21,4 +21,5 @@ using CFApi.Model;
         public DbSet<CFApi.Model.Medico> Medico { get; set; }
 
         public DbSet<CFApi.Model.Consulta> Consulta { get; set; }
-    }
+        public DbSet<CFApi.Model.MedicoPosto> MedicoPosto { get; set; }
+}

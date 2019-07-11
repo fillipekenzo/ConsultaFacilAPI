@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CFApi.Model;
 
 namespace CFApi.Controllers
 {
-    public class MedicoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MedicoController : ControllerBase
     {
         private readonly CFContext _context;
 
@@ -18,143 +20,81 @@ namespace CFApi.Controllers
             _context = context;
         }
 
-        // GET: Medico
-        public async Task<IActionResult> Index()
+        // GET: api/Medico
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Medico>>> GetMedico()
         {
-            var cFContext = _context.Medico.Include(m => m.Posto).Include(m => m.TipoConsulta);
-            return View(await cFContext.ToListAsync());
+            return await _context.Medico.ToListAsync();
         }
 
-        // GET: Medico/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Medico/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Medico>> GetMedico(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var medico = await _context.Medico
-                .Include(m => m.Posto)
-                .Include(m => m.TipoConsulta)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (medico == null)
-            {
-                return NotFound();
-            }
-
-            return View(medico);
-        }
-
-        // GET: Medico/Create
-        public IActionResult Create()
-        {
-            ViewData["PostoId"] = new SelectList(_context.Posto, "Id", "Id");
-            ViewData["TipoConsultaId"] = new SelectList(_context.TipoConsulta, "Id", "Id");
-            return View();
-        }
-
-        // POST: Medico/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,PostoId,TipoConsultaId,Id")] Medico medico)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(medico);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["PostoId"] = new SelectList(_context.Posto, "Id", "Id", medico.PostoId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TipoConsulta, "Id", "Id", medico.TipoConsultaId);
-            return View(medico);
-        }
-
-        // GET: Medico/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var medico = await _context.Medico.FindAsync(id);
+
             if (medico == null)
             {
                 return NotFound();
             }
-            ViewData["PostoId"] = new SelectList(_context.Posto, "Id", "Id", medico.PostoId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TipoConsulta, "Id", "Id", medico.TipoConsultaId);
-            return View(medico);
+
+            return medico;
         }
 
-        // POST: Medico/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Nome,PostoId,TipoConsultaId,Id")] Medico medico)
+        // PUT: api/Medico/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutMedico(int id, Medico medico)
         {
             if (id != medico.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(medico).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(medico);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MedicoExists(medico.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["PostoId"] = new SelectList(_context.Posto, "Id", "Id", medico.PostoId);
-            ViewData["TipoConsultaId"] = new SelectList(_context.TipoConsulta, "Id", "Id", medico.TipoConsultaId);
-            return View(medico);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MedicoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Medico/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Medico
+        [HttpPost]
+        public async Task<ActionResult<Medico>> PostMedico(Medico medico)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.Medico.Add(medico);
+            await _context.SaveChangesAsync();
 
-            var medico = await _context.Medico
-                .Include(m => m.Posto)
-                .Include(m => m.TipoConsulta)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetMedico", new { id = medico.Id }, medico);
+        }
+
+        // DELETE: api/Medico/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Medico>> DeleteMedico(int id)
+        {
+            var medico = await _context.Medico.FindAsync(id);
             if (medico == null)
             {
                 return NotFound();
             }
 
-            return View(medico);
-        }
-
-        // POST: Medico/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var medico = await _context.Medico.FindAsync(id);
             _context.Medico.Remove(medico);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return medico;
         }
 
         private bool MedicoExists(int id)

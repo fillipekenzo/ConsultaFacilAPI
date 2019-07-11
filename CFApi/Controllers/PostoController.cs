@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CFApi.Model;
 
 namespace CFApi.Controllers
 {
-    public class PostoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PostoController : ControllerBase
     {
         private readonly CFContext _context;
 
@@ -18,130 +20,81 @@ namespace CFApi.Controllers
             _context = context;
         }
 
-        // GET: Posto
-        public async Task<IActionResult> Index()
+        // GET: api/Posto
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Posto>>> GetPosto()
         {
-            return View(await _context.Posto.ToListAsync());
+            return await _context.Posto.ToListAsync();
         }
 
-        // GET: Posto/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Posto/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Posto>> GetPosto(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var posto = await _context.Posto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (posto == null)
-            {
-                return NotFound();
-            }
-
-            return View(posto);
-        }
-
-        // GET: Posto/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Posto/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Latitude,Lagitude,Id")] Posto posto)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(posto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(posto);
-        }
-
-        // GET: Posto/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var posto = await _context.Posto.FindAsync(id);
+
             if (posto == null)
             {
                 return NotFound();
             }
-            return View(posto);
+
+            return posto;
         }
 
-        // POST: Posto/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Nome,Latitude,Lagitude,Id")] Posto posto)
+        // PUT: api/Posto/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPosto(int id, Posto posto)
         {
             if (id != posto.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(posto).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(posto);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PostoExists(posto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(posto);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PostoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Posto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Posto
+        [HttpPost]
+        public async Task<ActionResult<Posto>> PostPosto(Posto posto)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.Posto.Add(posto);
+            await _context.SaveChangesAsync();
 
-            var posto = await _context.Posto
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetPosto", new { id = posto.Id }, posto);
+        }
+
+        // DELETE: api/Posto/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Posto>> DeletePosto(int id)
+        {
+            var posto = await _context.Posto.FindAsync(id);
             if (posto == null)
             {
                 return NotFound();
             }
 
-            return View(posto);
-        }
-
-        // POST: Posto/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var posto = await _context.Posto.FindAsync(id);
             _context.Posto.Remove(posto);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return posto;
         }
 
         private bool PostoExists(int id)
